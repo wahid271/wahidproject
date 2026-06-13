@@ -20,7 +20,8 @@
 
   <!-- Lenis smooth scroll -->
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.18/build/spline-viewer.js"></script>
+  
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -138,13 +139,17 @@
       </div>
 
       <!-- Right — Three.js Robot -->
-      <div class="hero-right">
-        <div class="robot-glow-bg"></div>
-        <canvas id="robotCanvas"></canvas>
-        <div class="robot-ring ring-1"></div>
-        <div class="robot-ring ring-2"></div>
-        <div class="robot-ring ring-3"></div>
-      </div>
+<div class="hero-right">
+  <div class="robot-glow-bg"></div>
+
+  <spline-viewer
+    url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode">
+  </spline-viewer>
+
+  <div class="robot-ring ring-1"></div>
+  <div class="robot-ring ring-2"></div>
+  <div class="robot-ring ring-3"></div>
+</div>
     </div>
 
     <div class="scroll-hint">
