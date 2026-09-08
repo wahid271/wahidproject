@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NexaStudio — Digital Agency Premium</title>
-  <meta name="description" content="Website modern untuk Sekolah, Pesantren & UMKM. Agency digital premium Indonesia." />
+  <title>Arkan Pradipta — Futures Trader · Public Track Record</title>
+  <meta name="description" content="Discretionary futures trader sharing a public track record: equity curve, monthly returns, drawdown, and full trade log. Wins and losses included." />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050508'/%3E%3Cpath d='M14 44l10-12 8 8 12-18' stroke='%230ecb81' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
 
   <!-- Lenis smooth scroll -->
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.18/build/spline-viewer.js"></script>
-  
+
+  <!-- Lightweight Charts (equity + drawdown) -->
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -30,10 +30,10 @@
   <div id="loader">
     <div class="loader-inner">
       <div class="loader-logo">
-        <span class="loader-n">N</span>
+        <span class="loader-n">›_</span>
         <div class="loader-bar"></div>
       </div>
-      <div class="loader-text">NexaStudio</div>
+      <div class="loader-text">AP · Trading Journal</div>
       <div class="loader-progress">
         <div class="loader-progress-fill"></div>
       </div>
@@ -48,18 +48,19 @@
   <!-- Navigation -->
   <nav id="navbar">
     <div class="nav-container">
-      <a href="#" class="nav-logo">
-        <span class="logo-mark">N</span>
-        <span class="logo-text">NexaStudio</span>
+      <a href="#hero" class="nav-logo">
+        <span class="logo-mark">›_</span>
+        <span class="logo-text">arkan<span class="logo-dim">.trade</span></span>
       </a>
       <ul class="nav-links">
-        <li><a href="#hero" class="nav-link">Beranda</a></li>
-        <li><a href="#projects" class="nav-link">Proyek</a></li>
-        <li><a href="#services" class="nav-link">Layanan</a></li>
-        <li><a href="#contact" class="nav-link">Kontak</a></li>
+        <li><a href="#performance" class="nav-link">Performance</a></li>
+        <li><a href="#trackrecord" class="nav-link">Track Record</a></li>
+        <li><a href="#strategy" class="nav-link">Strategy</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
       </ul>
-      <a href="#contact" class="nav-cta">Mulai Proyek</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <a href="#performance" class="nav-cta">View Track Record</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span>
       </button>
     </div>
@@ -68,15 +69,16 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <ul>
-      <li><a href="#hero" class="mob-link">Beranda</a></li>
-      <li><a href="#projects" class="mob-link">Proyek</a></li>
-      <li><a href="#services" class="mob-link">Layanan</a></li>
-      <li><a href="#contact" class="mob-link">Kontak</a></li>
-      <li><a href="#contact" class="mob-cta">Mulai Proyek</a></li>
+      <li><a href="#performance" class="mob-link">Performance</a></li>
+      <li><a href="#trackrecord" class="mob-link">Track Record</a></li>
+      <li><a href="#strategy" class="mob-link">Strategy</a></li>
+      <li><a href="#about" class="mob-link">About</a></li>
+      <li><a href="#contact" class="mob-link">Contact</a></li>
+      <li><a href="#performance" class="mob-cta">View Track Record</a></li>
     </ul>
   </div>
 
-  <!-- ===== HERO SECTION ===== -->
+  <!-- ===== HERO ===== -->
   <section id="hero">
     <div class="hero-bg">
       <canvas id="gridCanvas"></canvas>
@@ -84,7 +86,6 @@
       <div class="hero-glow-right"></div>
     </div>
 
-    <!-- Particle Canvas -->
     <canvas id="particleCanvas"></canvas>
 
     <div class="hero-content">
@@ -92,64 +93,81 @@
       <div class="hero-left">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          <span>Agency Digital #1 untuk Institusi</span>
+          <span>Live journal · <span data-fill="location">Jakarta, ID</span> · <span data-fill="timezone">GMT+7</span></span>
         </div>
 
         <h1 class="hero-title">
-          <span class="title-line" data-line="1">Website Modern</span>
-          <span class="title-line accent" data-line="2">untuk Sekolah,</span>
-          <span class="title-line" data-line="3">Pesantren &amp;</span>
-          <span class="title-line accent-dim" data-line="4">UMKM</span>
+          <span class="title-line" data-line="1">Trading futures</span>
+          <span class="title-line accent" data-line="2">with discipline,</span>
+          <span class="title-line" data-line="3">not predictions.</span>
+          <span class="title-line accent-dim" data-line="4">Public track record.</span>
         </h1>
 
         <p class="hero-sub">
-          Kami membangun kehadiran digital yang profesional dan berkesan.<br />
-          Tampil kredibel, modern, dan memenangkan kepercayaan audiens Anda.
+          I'm <strong data-fill="name">Arkan Pradipta</strong>, a discretionary futures trader.
+          Everything on this page — the equity curve, the drawdowns, the trade log —
+          comes from the same journal I keep for myself. Wins and losses included.
         </p>
 
         <div class="hero-actions">
-          <a href="#projects" class="btn-primary">
-            <span>Lihat Project</span>
+          <a href="#performance" class="btn-primary">
+            <span>View Performance</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
           <a href="#contact" class="btn-ghost">
-            <span>Hubungi Saya</span>
+            <span>Get in Touch</span>
           </a>
         </div>
 
         <div class="hero-stats">
           <div class="stat">
-            <span class="stat-num" data-target="47">0</span>
-            <span class="stat-plus">+</span>
-            <span class="stat-label">Proyek Selesai</span>
+            <span class="stat-num" data-target="184.2" data-decimals="1" data-prefix="+" data-suffix="%">0</span>
+            <span class="stat-label">Cumulative Return</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat">
-            <span class="stat-num" data-target="98">0</span>
-            <span class="stat-plus">%</span>
-            <span class="stat-label">Kepuasan Klien</span>
+            <span class="stat-num" data-target="63.4" data-decimals="1" data-suffix="%">0</span>
+            <span class="stat-label">Win Rate</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat">
-            <span class="stat-num" data-target="5">0</span>
-            <span class="stat-plus">★</span>
-            <span class="stat-label">Rating</span>
+            <span class="stat-num" data-target="2.31" data-decimals="2">0</span>
+            <span class="stat-label">Profit Factor</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num stat-num-dd" data-target="-11.8" data-decimals="1" data-suffix="%">0</span>
+            <span class="stat-label">Max Drawdown</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num" data-target="1247" data-decimals="0" data-group="1">0</span>
+            <span class="stat-label">Trades Logged</span>
           </div>
         </div>
       </div>
 
-      <!-- Right — Three.js Robot -->
-<div class="hero-right">
-  <div class="robot-glow-bg"></div>
-
-  <spline-viewer
-    url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode">
-  </spline-viewer>
-
-  <div class="robot-ring ring-1"></div>
-  <div class="robot-ring ring-2"></div>
-  <div class="robot-ring ring-3"></div>
-</div>
+      <!-- Right — animated equity canvas -->
+      <div class="hero-right">
+        <div class="robot-glow-bg"></div>
+        <div class="equity-panel">
+          <div class="equity-panel-head">
+            <span class="equity-title">EQUITY CURVE</span>
+            <span class="equity-range">2023 → TODAY</span>
+          </div>
+          <div class="equity-canvas-wrap">
+            <canvas id="equityCanvas"></canvas>
+          </div>
+          <div class="equity-panel-foot">
+            <span class="eq-kpi"><span class="eq-kpi-label">NET LIQ</span><span class="eq-kpi-val" id="heroNetLiq">—</span></span>
+            <span class="eq-kpi"><span class="eq-kpi-label">PEAK</span><span class="eq-kpi-val" id="heroPeak">—</span></span>
+            <span class="eq-kpi"><span class="eq-kpi-label">MAX DD</span><span class="eq-kpi-val eq-kpi-dd" id="heroMaxDD">—</span></span>
+          </div>
+        </div>
+        <div class="robot-ring ring-1"></div>
+        <div class="robot-ring ring-2"></div>
+        <div class="robot-ring ring-3"></div>
+      </div>
     </div>
 
     <div class="scroll-hint">
@@ -158,202 +176,198 @@
     </div>
   </section>
 
-  <!-- ===== MARQUEE ===== -->
-  <div class="marquee-wrap">
-    <div class="marquee-track">
-      <span>Website Sekolah</span><span class="sep">✦</span>
-      <span>Website Pesantren</span><span class="sep">✦</span>
-      <span>Website UMKM</span><span class="sep">✦</span>
-      <span>Landing Page</span><span class="sep">✦</span>
-      <span>Company Profile</span><span class="sep">✦</span>
-      <span>E-Commerce</span><span class="sep">✦</span>
-      <span>Website Sekolah</span><span class="sep">✦</span>
-      <span>Website Pesantren</span><span class="sep">✦</span>
-      <span>Website UMKM</span><span class="sep">✦</span>
-      <span>Landing Page</span><span class="sep">✦</span>
-      <span>Company Profile</span><span class="sep">✦</span>
-      <span>E-Commerce</span><span class="sep">✦</span>
-    </div>
+  <!-- ===== TICKER MARQUEE ===== -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee-track" id="tickerTrack"></div>
   </div>
 
-  <!-- ===== SERVICES SECTION ===== -->
-  <section id="services">
+  <!-- ===== PERFORMANCE DASHBOARD ===== -->
+  <section id="performance">
     <div class="container">
-      <div class="section-label">// Layanan Kami</div>
-      <h2 class="section-title">Solusi Digital <span class="grad-text">Tepat Sasaran</span></h2>
-      <p class="section-sub">Setiap institusi memiliki kebutuhan unik. Kami merancang solusi yang benar-benar sesuai.</p>
+      <div class="section-label">// Performance</div>
+      <h2 class="section-title">The Numbers, <span class="grad-text">Unedited</span></h2>
+      <p class="section-sub">Monthly returns, equity curve and drawdown — all derived from the trade log below. Sample data until my broker feed is linked.</p>
+
+      <div class="perf-grid">
+        <div class="perf-card perf-card-wide">
+          <div class="perf-card-head">
+            <h3>Equity Curve</h3>
+            <div class="perf-legend">
+              <span class="legend-item"><span class="legend-swatch legend-green"></span>Net liquidation</span>
+            </div>
+          </div>
+          <div id="equityChart" class="perf-chart perf-chart-tall"></div>
+        </div>
+
+        <div class="perf-card">
+          <div class="perf-card-head">
+            <h3>Monthly Returns %</h3>
+            <div class="perf-legend">
+              <span class="legend-item"><span class="legend-swatch legend-red"></span>Loss</span>
+              <span class="legend-item"><span class="legend-swatch legend-green"></span>Gain</span>
+            </div>
+          </div>
+          <div class="heatmap" id="heatmapGrid"></div>
+          <div class="heatmap-summary" id="heatmapSummary"></div>
+        </div>
+
+        <div class="perf-card">
+          <div class="perf-card-head">
+            <h3>Drawdown from Peak %</h3>
+          </div>
+          <div id="drawdownChart" class="perf-chart"></div>
+        </div>
+
+        <div class="perf-card">
+          <div class="perf-card-head">
+            <h3>P&L by Instrument</h3>
+          </div>
+          <div class="instrument-bars" id="instrumentBars"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRACK RECORD ===== -->
+  <section id="trackrecord">
+    <div class="container">
+      <div class="section-label">// Track Record</div>
+      <h2 class="section-title">Trade <span class="grad-text">Log</span></h2>
+      <p class="section-sub">Most recent 20 executions. Every trade is graded in R — risk multiples — so wins and losses are comparable.</p>
+
+      <div class="table-toolbar">
+        <div class="filter-group" role="group" aria-label="Filter trades">
+          <button class="filter-btn active" data-filter="ALL">All</button>
+          <button class="filter-btn" data-filter="WIN">Winners</button>
+          <button class="filter-btn" data-filter="LOSS">Losers</button>
+        </div>
+        <span class="table-note" id="tableNote">—</span>
+      </div>
+
+      <div class="table-card">
+        <div class="table-scroll">
+          <table class="trade-table" id="tradeTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Side</th>
+                <th class="ta-r">Entry</th>
+                <th class="ta-r">Exit</th>
+                <th class="ta-r">R</th>
+                <th class="ta-r">P&L</th>
+              </tr>
+            </thead>
+            <tbody id="tradeTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STRATEGY ===== -->
+  <section id="strategy">
+    <div class="container">
+      <div class="section-label">// Playbook</div>
+      <h2 class="section-title">Three Setups, <span class="grad-text">Mastered</span></h2>
+      <p class="section-sub">I don't chase everything that moves. These are the only patterns I'm allowed to trade.</p>
 
       <div class="services-grid">
         <div class="service-card" data-index="0">
           <div class="service-icon">
-            <svg viewBox="0 0 48 48" fill="none"><rect x="4" y="8" width="40" height="28" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M16 44h16M24 36v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M6 36l10-12 8 7 12-19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 12h6v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <h3>Website Sekolah</h3>
-          <p>Portal pendidikan modern dengan PPDB online, galeri kegiatan, profil guru, dan pengumuman real-time.</p>
-          <ul class="service-features">
-            <li>PPDB Online Terintegrasi</li>
-            <li>E-Learning Module</li>
-            <li>Admin Dashboard</li>
-          </ul>
+          <div class="strategy-meta" id="strat-meta-0"></div>
+          <h3 class="strat-name" data-strat="0"></h3>
+          <p class="strat-desc" data-strat="0"></p>
+          <div class="strategy-stats" data-strat-stats="0"></div>
           <div class="service-arrow">→</div>
         </div>
 
         <div class="service-card featured" data-index="1">
-          <div class="service-badge">Populer</div>
+          <div class="service-badge">Core Edge</div>
           <div class="service-icon">
-            <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4z" stroke="currentColor" stroke-width="2.5"/><path d="M24 14v10l6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M24 42s-14-8.6-14-19a8 8 0 0114-5.3A8 8 0 0138 23c0 10.4-14 19-14 19z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
           </div>
-          <h3>Website Pesantren</h3>
-          <p>Representasi digital pesantren yang elegan dengan pendaftaran santri online dan profil kyai/ustaz.</p>
-          <ul class="service-features">
-            <li>Pendaftaran Santri Online</li>
-            <li>Jadwal & Kurikulum</li>
-            <li>Galeri & Prestasi</li>
-          </ul>
+          <div class="strategy-meta" id="strat-meta-1"></div>
+          <h3 class="strat-name" data-strat="1"></h3>
+          <p class="strat-desc" data-strat="1"></p>
+          <div class="strategy-stats" data-strat-stats="1"></div>
           <div class="service-arrow">→</div>
         </div>
 
         <div class="service-card" data-index="2">
           <div class="service-icon">
-            <svg viewBox="0 0 48 48" fill="none"><path d="M8 16h32M8 32h32M16 8v32M32 8v32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="4" y="4" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2.5"/></svg>
+            <svg viewBox="0 0 48 48" fill="none"><path d="M8 40V8M8 40h32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="14" y="22" width="6" height="10" rx="1" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="14" width="6" height="18" rx="1" stroke="currentColor" stroke-width="2.5"/></svg>
           </div>
-          <h3>Website UMKM</h3>
-          <p>Toko online profesional dan company profile yang mendongkrak penjualan dan kepercayaan pelanggan.</p>
-          <ul class="service-features">
-            <li>Katalog Produk Digital</li>
-            <li>Integrasi WhatsApp</li>
-            <li>SEO Optimization</li>
-          </ul>
+          <div class="strategy-meta" id="strat-meta-2"></div>
+          <h3 class="strat-name" data-strat="2"></h3>
+          <p class="strat-desc" data-strat="2"></p>
+          <div class="strategy-stats" data-strat-stats="2"></div>
           <div class="service-arrow">→</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== PROJECTS SECTION ===== -->
-  <section id="projects">
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
     <div class="container">
-      <div class="section-label">// Portfolio</div>
-      <h2 class="section-title">Proyek <span class="grad-text">Unggulan</span></h2>
-      <p class="section-sub">Hasil nyata yang telah kami bangun untuk klien terpercaya.</p>
+      <div class="section-label">// About</div>
+      <h2 class="section-title">Process Over <span class="grad-text">P&L</span></h2>
 
-      <div class="projects-grid">
-        <!-- Project 1 -->
-        <div class="project-card" data-tilt>
-          <div class="project-img">
-            <div class="project-mockup pesantren-mock">
-              <div class="mock-nav"></div>
-              <div class="mock-hero-bar"></div>
-              <div class="mock-content">
-                <div class="mock-heading"></div>
-                <div class="mock-text"></div>
-                <div class="mock-text short"></div>
-                <div class="mock-btn"></div>
-              </div>
-              <div class="mock-cards">
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-                <div class="mock-card"></div>
-              </div>
-            </div>
-            <div class="project-overlay">
-              <div class="project-overlay-content">
-                <span>Lihat Detail</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-            </div>
-          </div>
-          <div class="project-info">
-            <div class="project-tags">
-              <span class="tag">Pesantren</span>
-              <span class="tag">Islamic</span>
-              <span class="tag">2025</span>
-            </div>
-            <h3>Pondok Pesantren Al-Hikmah</h3>
-            <p>Website representatif pesantren modern dengan sistem pendaftaran santri online dan galeri kegiatan.</p>
-            <div class="project-meta">
-              <span class="meta-item">✦ PPDB Online</span>
-              <span class="meta-item">✦ Responsive</span>
-            </div>
+      <div class="about-grid">
+        <div class="about-left">
+          <p class="about-bio" data-fill="bio"></p>
+          <ul class="about-facts">
+            <li><span>Trading since</span><strong data-fill="since"></strong></li>
+            <li><span>Style</span><strong data-fill="title"></strong></li>
+            <li><span>Markets</span><strong>CME index, metals, energy & FX futures</strong></li>
+            <li><span>Based in</span><strong data-fill="location"></strong></li>
+          </ul>
+          <div class="social-links">
+            <a href="#" class="social-link" data-social="x" target="_blank" rel="noopener" aria-label="X / Twitter">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.5L6.4 22H3.2l7.3-8.3L2.8 2h6.4l4.5 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg>
+            </a>
+            <a href="#" class="social-link" data-social="tradingview" target="_blank" rel="noopener" aria-label="TradingView">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-7.5L9 16.5 4.5 6H1l6.8 14h2.4L21 6z"/></svg>
+            </a>
+            <a href="#" class="social-link" data-social="youtube" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9.5l5 2.5-5 2.5v-5z" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="#" class="social-link" data-social="instagram" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
           </div>
         </div>
 
-        <!-- Project 2 -->
-        <div class="project-card" data-tilt>
-          <div class="project-img">
-            <div class="project-mockup sekolah-mock">
-              <div class="mock-nav"></div>
-              <div class="mock-hero-bar dark-hero"></div>
-              <div class="mock-content">
-                <div class="mock-heading blue"></div>
-                <div class="mock-text"></div>
-                <div class="mock-text short"></div>
-                <div class="mock-btn blue-btn"></div>
-              </div>
-              <div class="mock-cards">
-                <div class="mock-card blue-card"></div>
-                <div class="mock-card blue-card"></div>
-                <div class="mock-card blue-card"></div>
-              </div>
-            </div>
-            <div class="project-overlay">
-              <div class="project-overlay-content">
-                <span>Lihat Detail</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
+        <div class="about-right">
+          <div class="principle-item" data-principle>
+            <div class="principle-num">01</div>
+            <div class="principle-body">
+              <h3></h3>
+              <p></p>
             </div>
           </div>
-          <div class="project-info">
-            <div class="project-tags">
-              <span class="tag">Sekolah</span>
-              <span class="tag">Education</span>
-              <span class="tag">2025</span>
-            </div>
-            <h3>SMA Negeri 1 Nusantara</h3>
-            <p>Portal sekolah komprehensif dengan PPDB digital, e-learning, profil guru, dan pengumuman real-time.</p>
-            <div class="project-meta">
-              <span class="meta-item">✦ E-Learning</span>
-              <span class="meta-item">✦ Dashboard Admin</span>
+          <div class="principle-item" data-principle>
+            <div class="principle-num">02</div>
+            <div class="principle-body">
+              <h3></h3>
+              <p></p>
             </div>
           </div>
-        </div>
-
-        <!-- Project 3 -->
-        <div class="project-card" data-tilt>
-          <div class="project-img">
-            <div class="project-mockup umkm-mock">
-              <div class="mock-nav"></div>
-              <div class="mock-hero-bar green-hero"></div>
-              <div class="mock-content">
-                <div class="mock-heading green"></div>
-                <div class="mock-text"></div>
-                <div class="mock-text short"></div>
-                <div class="mock-btn green-btn"></div>
-              </div>
-              <div class="mock-cards">
-                <div class="mock-card green-card"></div>
-                <div class="mock-card green-card"></div>
-                <div class="mock-card green-card"></div>
-              </div>
-            </div>
-            <div class="project-overlay">
-              <div class="project-overlay-content">
-                <span>Lihat Detail</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
+          <div class="principle-item" data-principle>
+            <div class="principle-num">03</div>
+            <div class="principle-body">
+              <h3></h3>
+              <p></p>
             </div>
           </div>
-          <div class="project-info">
-            <div class="project-tags">
-              <span class="tag">UMKM</span>
-              <span class="tag">E-Commerce</span>
-              <span class="tag">2026</span>
-            </div>
-            <h3>Batik Nusantara Store</h3>
-            <p>Toko online premium produk batik lokal dengan katalog digital dan integrasi WhatsApp Business.</p>
-            <div class="project-meta">
-              <span class="meta-item">✦ Katalog Produk</span>
-              <span class="meta-item">✦ WhatsApp CTA</span>
+          <div class="principle-item" data-principle>
+            <div class="principle-num">04</div>
+            <div class="principle-body">
+              <h3></h3>
+              <p></p>
             </div>
           </div>
         </div>
@@ -361,126 +375,60 @@
     </div>
   </section>
 
-  <!-- ===== PROCESS SECTION ===== -->
-  <section id="process">
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
     <div class="container">
-      <div class="section-label">// Cara Kerja</div>
-      <h2 class="section-title">Proses <span class="grad-text">Transparan</span></h2>
+      <div class="section-label">// FAQ</div>
+      <h2 class="section-title">Straight <span class="grad-text">Answers</span></h2>
 
-      <div class="process-list">
-        <div class="process-item">
-          <div class="process-num">01</div>
-          <div class="process-body">
-            <h3>Konsultasi Gratis</h3>
-            <p>Diskusikan kebutuhan Anda. Kami dengarkan, analisis, dan beri rekomendasi terbaik tanpa biaya.</p>
-          </div>
-          <div class="process-line"></div>
-        </div>
-        <div class="process-item">
-          <div class="process-num">02</div>
-          <div class="process-body">
-            <h3>Desain & Prototype</h3>
-            <p>Kami buat tampilan yang sesuai identitas institusi. Revisi hingga Anda puas 100%.</p>
-          </div>
-          <div class="process-line"></div>
-        </div>
-        <div class="process-item">
-          <div class="process-num">03</div>
-          <div class="process-body">
-            <h3>Development</h3>
-            <p>Koding yang bersih, cepat, dan responsif. Dibangun dengan teknologi terkini.</p>
-          </div>
-          <div class="process-line"></div>
-        </div>
-        <div class="process-item">
-          <div class="process-num">04</div>
-          <div class="process-body">
-            <h3>Launch & Support</h3>
-            <p>Website live + pelatihan penggunaan + garansi support 3 bulan tanpa biaya tambahan.</p>
-          </div>
-        </div>
-      </div>
+      <div class="faq-list" id="faqList"></div>
     </div>
   </section>
 
-  <!-- ===== CONTACT SECTION ===== -->
+  <!-- ===== CONTACT ===== -->
   <section id="contact">
     <div class="contact-glow"></div>
     <div class="container">
       <div class="contact-grid">
         <!-- Left -->
         <div class="contact-left">
-          <div class="section-label">// Hubungi Kami</div>
-          <h2 class="section-title">Siap Memulai<br /><span class="grad-text">Proyek Anda?</span></h2>
-          <p class="section-sub">Konsultasi gratis. Tanpa tekanan. Kami bantu Anda menemukan solusi terbaik.</p>
+          <div class="section-label">// Contact</div>
+          <h2 class="section-title">Talk Process,<br /><span class="grad-text">Not Signals</span></h2>
+          <p class="section-sub">Questions about risk management, journaling or the playbook are welcome. Trade calls are not — I don't sell anything.</p>
 
-          <a href="https://wa.me/6281234567890?text=Halo%20NexaStudio%2C%20saya%20ingin%20konsultasi%20proyek%20website" class="btn-whatsapp" target="_blank">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            <span>Chat WhatsApp Sekarang</span>
+          <a href="mailto:trader@example.com" class="btn-primary btn-email" data-mailto="email">
+            <span data-fill="contactEmail">trader@example.com</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
+          <button class="btn-ghost btn-copy" id="copyEmail" type="button">Copy email address</button>
 
           <div class="contact-info-list">
-            <div class="contact-info-item">
-              <span class="ci-icon">📍</span>
-              <span>Bekasi, Jawa Barat, Indonesia</span>
-            </div>
-            <div class="contact-info-item">
-              <span class="ci-icon">📱</span>
-              <span>+62 812-3456-7890</span>
-            </div>
-            <div class="contact-info-item">
-              <span class="ci-icon">✉️</span>
-              <span>hello@nexastudio.id</span>
-            </div>
+            <div class="contact-info-item"><span class="ci-icon mono">▸</span><span>Replies within 48h (<span data-fill="timezone"></span>)</span></div>
+            <div class="contact-info-item"><span class="ci-icon mono">▸</span><span>Open to podcast & interview requests</span></div>
+            <div class="contact-info-item"><span class="ci-icon mono">▸</span><span>Not open to managed accounts</span></div>
           </div>
 
           <div class="social-links">
-            <a href="#" class="social-link" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            <a href="#" class="social-link" data-social="x" target="_blank" rel="noopener" aria-label="X / Twitter">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.5L6.4 22H3.2l7.3-8.3L2.8 2h6.4l4.5 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg>
             </a>
-            <a href="#" class="social-link" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M12 10v7M12 13a3 3 0 016 0v4"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="TikTok">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+            <a href="#" class="social-link" data-social="tradingview" target="_blank" rel="noopener" aria-label="TradingView">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-7.5L9 16.5 4.5 6H1l6.8 14h2.4L21 6z"/></svg>
             </a>
           </div>
         </div>
 
-        <!-- Right: Form -->
+        <!-- Right: disclosure card -->
         <div class="contact-right">
-          <div class="form-card">
-            <h3>Kirim Pesan</h3>
-            <div class="form-group">
-              <label>Nama Lengkap</label>
-              <input type="text" placeholder="Nama Anda" class="form-input" />
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" placeholder="email@anda.com" class="form-input" />
-            </div>
-            <div class="form-group">
-              <label>Jenis Layanan</label>
-              <select class="form-input form-select">
-                <option value="">Pilih layanan...</option>
-                <option>Website Sekolah</option>
-                <option>Website Pesantren</option>
-                <option>Website UMKM</option>
-                <option>Landing Page</option>
-                <option>Lainnya</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Pesan</label>
-              <textarea placeholder="Ceritakan kebutuhan Anda..." class="form-input form-textarea"></textarea>
-            </div>
-            <button class="btn-submit" id="submitBtn">
-              <span>Kirim Pesan</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            </button>
-            <div class="form-success" id="formSuccess">
-              ✓ Pesan terkirim! Kami akan segera menghubungi Anda.
-            </div>
+          <div class="form-card disclosure-card">
+            <h3>Full Disclosure</h3>
+            <ul class="disclosure-list">
+              <li>All performance shown is <strong>self-reported</strong> from personal broker statements until a verified feed is linked.</li>
+              <li>Past performance <strong>does not guarantee</strong> future results.</li>
+              <li>Nothing on this site is investment advice or a solicitation to trade.</li>
+              <li>Futures involve substantial risk of loss and are not suitable for every investor.</li>
+            </ul>
+            <div class="disclosure-updated mono" id="dataUpdated"></div>
           </div>
         </div>
       </div>
@@ -492,18 +440,20 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <span class="logo-mark">N</span>
-          <span class="logo-text">NexaStudio</span>
+          <span class="logo-mark">›_</span>
+          <span class="logo-text">arkan<span class="logo-dim">.trade</span></span>
         </div>
-        <p class="footer-copy">© 2026 NexaStudio. Dibuat dengan ❤ di Indonesia.</p>
+        <p class="footer-copy">© 2026 <span data-fill="name"></span>. Journal, not advice.</p>
         <div class="footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="#performance">Performance</a>
+          <a href="#trackrecord">Track Record</a>
+          <a href="#contact">Contact</a>
         </div>
       </div>
     </div>
   </footer>
 
+  <script src="data/portfolio.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
