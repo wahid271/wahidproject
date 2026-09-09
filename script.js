@@ -721,6 +721,74 @@ function initTilt() {
   });
 }
 
+/* ── Hero profile photo upload (right of the Spline robot) ── */
+function initProfilePhoto() {
+  const input   = document.getElementById('profileInput');
+  const btn     = document.getElementById('profileUploadBtn');
+  const card    = document.getElementById('profileCard');
+  const img     = document.getElementById('profileImg');
+  const empty   = document.getElementById('profileEmpty');
+  const errEl   = document.getElementById('profileError');
+  if (!input || !btn || !card || !img || !empty) return;
+
+  const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+  const MAX_MB  = 10;
+
+  function showError(msg) {
+    if (!errEl) return;
+    errEl.textContent = msg;
+    errEl.hidden = false;
+  }
+  function clearError() { if (errEl) errEl.hidden = true; }
+
+  function applyPhoto(file) {
+    clearError();
+    if (!file) return;
+    if (!ALLOWED.includes(file.type)) {
+      showError('Unsupported file. Use JPG, JPEG, PNG or WebP.');
+      return;
+    }
+    if (file.size > MAX_MB * 1024 * 1024) {
+      showError('Image too large. Maximum ' + MAX_MB + ' MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      img.src = e.target.result;
+      img.hidden = false;
+      empty.hidden = true;
+      card.classList.add('has-photo');
+    };
+    reader.onerror = () => showError('Could not read that file. Try again.');
+    reader.readAsDataURL(file);
+  }
+
+  // Button + card click both open the picker
+  btn.addEventListener('click', () => input.click());
+  card.addEventListener('click', () => input.click());
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+  });
+
+  // Selecting a new file replaces the existing photo
+  input.addEventListener('change', () => {
+    applyPhoto(input.files && input.files[0]);
+    input.value = ''; // allow re-selecting the same file to replace
+  });
+
+  // Drag & drop onto the photo card
+  ['dragenter', 'dragover'].forEach(ev =>
+    card.addEventListener(ev, e => { e.preventDefault(); card.classList.add('dragover'); })
+  );
+  ['dragleave', 'drop'].forEach(ev =>
+    card.addEventListener(ev, e => { e.preventDefault(); card.classList.remove('dragover'); })
+  );
+  card.addEventListener('drop', e => {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) applyPhoto(file);
+  });
+}
+
 /* ── Init All ── */
 function initPage() {
   if (HAS_GSAP && HAS_ST) {
@@ -742,6 +810,7 @@ function initPage() {
   initSmoothLinks();
   initCharts();
   initHeroEquity();
+  initProfilePhoto();
   initCounters();
   initReveals();
   initTilt();

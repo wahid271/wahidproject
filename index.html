@@ -22,6 +22,9 @@
   <!-- Lightweight Charts (equity + drawdown) -->
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
+  <!-- Spline viewer (interactive 3D robot) -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.98/build/spline-viewer.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -147,27 +150,47 @@
         </div>
       </div>
 
-      <!-- Right — animated equity canvas -->
+      <!-- Right — interactive Spline robot (left) + profile photo (right) -->
       <div class="hero-right">
         <div class="robot-glow-bg"></div>
-        <div class="equity-panel">
-          <div class="equity-panel-head">
-            <span class="equity-title">EQUITY CURVE</span>
-            <span class="equity-range">2023 → TODAY</span>
-          </div>
-          <div class="equity-canvas-wrap">
-            <canvas id="equityCanvas"></canvas>
-          </div>
-          <div class="equity-panel-foot">
-            <span class="eq-kpi"><span class="eq-kpi-label">NET LIQ</span><span class="eq-kpi-val" id="heroNetLiq">—</span></span>
-            <span class="eq-kpi"><span class="eq-kpi-label">PEAK</span><span class="eq-kpi-val" id="heroPeak">—</span></span>
-            <span class="eq-kpi"><span class="eq-kpi-label">MAX DD</span><span class="eq-kpi-val eq-kpi-dd" id="heroMaxDD">—</span></span>
-          </div>
+
+        <!-- Robot stage: interactive Spline robot — do not remove -->
+        <div class="robot-stage">
+          <spline-viewer
+            id="heroRobot"
+            url="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"
+            loading-anim-type="spinner-small-dark"
+            events-target="local"></spline-viewer>
         </div>
-        <div class="robot-ring ring-1"></div>
-        <div class="robot-ring ring-2"></div>
-        <div class="robot-ring ring-3"></div>
+
+        <!-- Profile photo column (right of the robot) -->
+        <div class="profile-col">
+          <div class="profile-card" id="profileCard" tabindex="0" role="button"
+               aria-label="Upload profile photo">
+            <img id="profileImg" class="profile-img" alt="Profile photo" hidden />
+            <div class="profile-empty" id="profileEmpty">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <circle cx="24" cy="17" r="7" />
+                <path d="M10 40c2.2-7.2 7.4-11 14-11s11.8 3.8 14 11" stroke-linecap="round" />
+              </svg>
+              <span class="profile-empty-title">Your photo here</span>
+              <span class="profile-empty-hint">JPG · PNG · WebP</span>
+            </div>
+          </div>
+          <button class="btn-ghost profile-upload-btn" id="profileUploadBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 20h16" stroke-linecap="round"/></svg>
+            <span>Upload Profile Photo</span>
+          </button>
+          <input type="file" id="profileInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden />
+          <p class="profile-error" id="profileError" role="alert" hidden></p>
+        </div>
       </div>
+    </div>
+
+    <!-- Personal brand — below the robot + photo composition -->
+    <div class="hero-brand" aria-label="Personal brand">
+      <span class="brand-mark">›_</span>
+      <span class="brand-name">WAHID</span>
     </div>
 
     <div class="scroll-hint">
